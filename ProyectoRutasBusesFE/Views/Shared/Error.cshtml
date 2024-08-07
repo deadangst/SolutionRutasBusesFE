@@ -1,0 +1,18 @@
+﻿@model ProyectoRutasBusesFE.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="display-4">Lo sentimos, ocurrió un error.</h1>
+<h2>@Model.StatusCode</h2>
+<p class="lead">No pudimos procesar su solicitud en este momento.</p>
+@if (!string.IsNullOrEmpty(Model.RequestId))
+{
+    <p class="text-muted">
+        <strong>ID de la solicitud:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+<p class="text-muted">
+    Si el problema persiste, póngase en contacto con el administrador del sistema.
+</p>
+<a href="javascript:history.back()" class="btn btn-primary">Volver</a>

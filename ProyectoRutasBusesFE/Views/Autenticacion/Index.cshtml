@@ -1,0 +1,71 @@
+﻿@model UserLoginModel
+@{
+    Layout = "_AutenticacionLayout";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+    <title>Inicio de sesión</title>
+    <style>
+        .login-box {
+            width: 360px;
+            margin: 7% auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="login-box-body">
+            <p class="login-box-msg"><b>Ingrese sus credenciales</b></p>
+            <form asp-action="Login" asp-controller="Autenticacion" method="post">
+                <div class="form-group has-feedback">
+                    <label asp-for="Email" class="control-label"></label>
+                    <span class="fa fa-envelope form-control-feedback"></span>
+                    <input asp-for="Email" class="form-control" placeholder="ejemplo@correo.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <label asp-for="Password" class="control-label"></label>
+                    <span class="fa fa-lock form-control-feedback"></span>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Debe digitar una clave segura" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-xs-6">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Iniciar sesión</button>
+                    </div>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <a asp-action="AbrirCrearUsuario" asp-controller="Autenticacion" class="text-center">Registrar una nueva membresía</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                swal("Éxito", successMessage, "success");
+            }
+
+            if (errorMessage) {
+                swal("Error", errorMessage, "error");
+            }
+        });
+    </script>
+</body>
+</html>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
