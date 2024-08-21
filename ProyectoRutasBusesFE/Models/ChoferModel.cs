@@ -18,6 +18,12 @@ namespace ProyectoRutasBusesFE.Models
         [Display(Name = "Número de Empleado")]
         public string numeroEmpleado { get; set; }
 
+        [Display(Name = "Ruta ID")]
+        public int? rutaID { get; set; }  // Nullable
+
+        [Display(Name = "Unidad ID")]
+        public int? unidadID { get; set; }  // Nullable
+
         #endregion
 
         #region Constructor 
@@ -27,6 +33,8 @@ namespace ProyectoRutasBusesFE.Models
             choferID = 0;
             usuarioID = 0;
             numeroEmpleado = string.Empty;
+            rutaID = null;
+            unidadID = null;
         }
 
         #endregion

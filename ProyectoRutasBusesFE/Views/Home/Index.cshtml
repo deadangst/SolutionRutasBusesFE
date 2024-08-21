@@ -2,20 +2,20 @@
     ViewData["Title"] = "Bienvenido";
 }
 
-<h2>Bienvenido, @ViewBag.UserName</h2>
 
-<div class="container">
-    <div class="row">
-        @foreach (var ruta in ViewBag.Rutas)
-        {
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@ruta</h5>
-                        <a href="@Url.Action("ConfigurarRuta", "Rutas", new { nombre = ruta })" class="btn btn-primary">Configurar Ruta</a>
-                    </div>
-                </div>
+<div class="container mt-5">
+    <div class="jumbotron">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="display-4">Acerca de la Aplicación</h1>
+                <p class="lead">Esta es una aplicación Web API para la gestión de rutas de autobuses.</p>
             </div>
-        }
+            <div>
+                <img src="~/images/bus-35-512.png" alt="Bus Icon" class="img-fluid" style="max-width: 200px; height: auto;" />
+            </div>
+        </div>
+        <hr class="my-4">
+        <p>Utiliza esta aplicación para agregar, modificar, eliminar y consultar rutas, unidades, choferes, recaudaciones y bitácoras.</p>
+
     </div>
 </div>

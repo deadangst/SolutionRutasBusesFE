@@ -1,52 +1,61 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using ProyectoRutasBusesFE.Models;
-using System.Threading.Tasks;
-using System;
-using Microsoft.AspNetCore.Http;
-using System.IdentityModel.Tokens.Jwt;
+using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
+using ProyectoRutasBusesFE.Extensions;
 
 namespace ProyectoRutasBusesFE.Controllers
 {
     public class AutenticacionController : Controller
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IConfiguration _config;
-        private readonly GestorConexionApis _gestorConexionApis;
-
-        public AutenticacionController(IConfiguration config, IHttpContextAccessor httpContextAccessor, GestorConexionApis gestorConexionApis)
-        {
-            _config = config;
-            _httpContextAccessor = httpContextAccessor;
-            _gestorConexionApis = gestorConexionApis;
-        }
-
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm] UserLoginModel loginModel)
+        public async Task<IActionResult> IniciarSesion(UsuarioModel P_usuario)
         {
-            if (loginModel == null)
-                return BadRequest("Invalid client request");
+            UsuarioModel objusuario = P_usuario;
 
-            var usuario = await _gestorConexionApis.ObtenerUsuarioPorEmail(loginModel.Email);
+            if (objusuario != null)
+            {
+                GestorConexionApis objgestor = new GestorConexionApis();
+                List<PerfilModel> perfiles = await objgestor.AutorizacionesPorUsuarios(objusuario);
 
-            if (usuario == null || !BCrypt.Net.BCrypt.Verify(loginModel.Password, usuario.passwordHash))
-                return Unauthorized();
+                // Aquí se asume que cada usuario tiene un solo perfil relacionado, si no es el caso, se debería ajustar
+                if (perfiles.Count > 0)
+                {
+                    objusuario.usuarioID = perfiles[0].codigoPerfil; // Asigna el código de perfil al usuarioID
+                }
 
-            var token = GenerateJwtToken(loginModel.Email);
+                HttpContext.Session.SetObject("UsuarioAutenticado", objusuario);
 
-            // Guardar el token en la sesión
-            HttpContext.Session.SetString("JWToken", token);
+                var claims = new List<Claim>()
+        {
+            new Claim(ClaimTypes.Name, objusuario.email),
+            new Claim(ClaimTypes.GivenName, objusuario.nombre),  // Agregar el nombre
+            new Claim(ClaimTypes.Surname, objusuario.apellido),  // Agregar el apellido
+            new Claim("Usuario", objusuario.email)
+        };
 
-            return RedirectToAction("Index", "Home");
+                foreach (PerfilModel item in perfiles)
+                    claims.Add(new Claim(ClaimTypes.Role, item.descripcion)); // Validar con descripción del perfil
+
+                var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity));
+                return RedirectToAction("Index", "Home");
+            }
+
+            return RedirectToAction("Index", "Autenticacion");
         }
+
+
+
+
 
         [HttpGet]
         public IActionResult AbrirCrearUsuario()
@@ -57,7 +66,8 @@ namespace ProyectoRutasBusesFE.Controllers
         [HttpPost]
         public async Task<IActionResult> GuardarUsuario(UsuarioModel usuario)
         {
-            var resultado = await _gestorConexionApis.AgregarUsuario(usuario);
+            GestorConexionApis objgestor = new GestorConexionApis();
+            var resultado = await objgestor.AgregarUsuario(usuario);
             if (resultado)
             {
                 TempData["SuccessMessage"] = "Usuario agregado exitosamente.";
@@ -66,24 +76,14 @@ namespace ProyectoRutasBusesFE.Controllers
             {
                 TempData["ErrorMessage"] = "Error al agregar el usuario.";
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Autenticacion");
         }
 
-        private string GenerateJwtToken(string email)
+        [HttpGet]
+        public async Task<IActionResult> CerrarSesion()
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Email, email)
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Autenticacion");
         }
-    }
+}
 }

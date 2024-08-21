@@ -1,0 +1,79 @@
+﻿@model ProyectoRutasBusesFE.Models.UnidadModel
+
+@{
+    ViewData["Title"] = "Mantenimiento de Unidad";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+    <title>Mantenimiento de Unidad</title>
+</head>
+<body>
+    <div class="maintenance-ticket">
+        <h1>Mantenimiento de Unidad</h1>
+        <form asp-action="GuardarMantenimiento" asp-controller="Unidad" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">ID Unidad:</label>
+                        <input type="text" asp-for="unidadID" readonly="readonly" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Número de Placa:</label>
+                        <input asp-for="numeroPlaca" readonly="readonly" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Tipo de Motor:</label>
+                        <input asp-for="tipoMotor" readonly="readonly" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Capacidad:</label>
+                        <input asp-for="capacidad" readonly="readonly" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="estadoUnidad" class="control-label">Estado de la Unidad</label>
+                        <select asp-for="estadoUnidad" class="form-control" asp-items="ViewBag.EstadosUnidad"></select>
+                        <span asp-validation-for="estadoUnidad" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Ruta Asignada:</label>
+                        <select asp-for="rutaID" class="form-control" asp-items="ViewBag.Rutas"></select>
+                        <span asp-validation-for="rutaID" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="icon-container">
+                <i class="fa fa-wrench"></i>
+            </div>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+        <div class="text-center mt-3">
+            <a asp-action="Mantenimiento" asp-controller="Unidad" class="text-center">Regresar a listado de unidades</a>
+        </div>
+    </div>
+    <!-- /.maintenance-ticket -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="~/js/editarStyle.js"></script> <!-- Incluye el script -->
+    <script>
+        $(document).ready(function () {
+            aplicarEstiloMantenimiento(); // Llama a la función para aplicar el estilo
+        });
+    </script>
+</body>
+</html>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

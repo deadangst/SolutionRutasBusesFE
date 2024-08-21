@@ -1,0 +1,126 @@
+﻿@model IEnumerable<ProyectoRutasBusesFE.Models.RecaudacionModel>
+
+@{
+    ViewData["Title"] = "Gestión de Recaudaciones";
+
+    // Diccionarios para mapear IDs a nombres o descripciones
+    var rutas = ViewBag.Rutas as Dictionary<int, string>; // Mapea rutaID a nombre de la ruta
+    var unidades = ViewBag.Unidades as Dictionary<int, string>; // Mapea unidadID a número de placa
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-lg-12 d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <a class="btn btn-success mb-3" onclick="ShowPopup('@Url.Action("AbrirCrearRecaudacion", "Recaudacion")')">
+                    <i class="fa fa-plus"></i> Generar Reporte Recaudación
+                </a>
+            </div>
+            <div>
+                <form asp-action="FiltrarListaRecaudaciones" method="get" class="form-inline">
+                    <input type="text" name="RecaudacionBuscar" class="form-control mr-2" placeholder="Buscar Recaudación..." />
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <div class="container p-3 mb-3 bg-light rounded" style="width: 100%;">
+                            <table id="recaudacionesTable" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Ruta</th>
+                                        <th>Unidad</th>
+                                        <th>Fecha</th>
+                                        <th>Cantidad de Pasajeros</th>
+                                        <th>Monto Recaudado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var recaudacion in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (rutas.ContainsKey(recaudacion.rutaID))
+                                                {
+                                                    @rutas[recaudacion.rutaID]
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger">Ruta no encontrada</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (unidades.ContainsKey(recaudacion.unidadID))
+                                                {
+                                                    @unidades[recaudacion.unidadID]
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger">Unidad no encontrada</span>
+                                                }
+                                            </td>
+                                            <td>@recaudacion.fecha.ToString("dd/MM/yyyy")</td>
+                                            <td>@recaudacion.cantidadPasajeros</td>
+                                            <td>@recaudacion.montoRecaudado.ToString("C", new System.Globalization.CultureInfo("es-CR"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Espacio para el modal -->
+<div class="modal modal-primary fade" id="modalDefault">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <link href="https://cdn.datatables.net/v/dt/dt-2.1.0/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/dt/dt-2.1.0/datatables.min.js"></script>
+    <script src="~/js/views/showpopup.js"></script>
+    <script src="~/js/datatable.js"></script> <!-- Incluye el script de inicialización de DataTable -->
+
+    <script>
+    initializeDataTable('#recaudacionesTable'); // Inicializa el DataTable
+
+    // Mostrar mensaje de error en un popup usando SweetAlert
+    var errorMessage = '@TempData["ErrorMessage"]';
+    if (errorMessage) {
+        swal({
+            title: "Error",
+            text: errorMessage,
+            type: "error",
+            confirmButtonText: "Aceptar"
+        });
+    }
+    </script>
+
+}

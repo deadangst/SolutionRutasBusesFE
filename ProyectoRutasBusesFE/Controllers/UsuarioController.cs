@@ -4,24 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
+
 
 namespace ProyectoRutasBusesFE.Controllers
 {
     public class UsuarioController : Controller
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public UsuarioController(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
+       
 
         #region Acciones de apertura de vistas
 
         public async Task<IActionResult> Index()
         {
-            GestorConexionApis objconexion = new GestorConexionApis(_httpContextAccessor);
+            GestorConexionApis objconexion = new GestorConexionApis();
             List<UsuarioModel> resultado = await objconexion.ListarUsuarios();
             return View(resultado);
         }
@@ -32,7 +27,7 @@ namespace ProyectoRutasBusesFE.Controllers
             {
                 new SelectListItem { Value = "1", Text = "SuperAdmin" },
                 new SelectListItem { Value = "2", Text = "Supervisor" },
-                new SelectListItem { Value = "3", Text = "Mecanico" },
+                new SelectListItem { Value = "3", Text = "Mecánico" },
                 new SelectListItem { Value = "4", Text = "Chofer" }
             };
             return View();
@@ -41,7 +36,7 @@ namespace ProyectoRutasBusesFE.Controllers
         [HttpGet]
         public async Task<IActionResult> FiltrarListaUsuarios(string UsuarioBuscar)
         {
-            GestorConexionApis objgestor = new GestorConexionApis(_httpContextAccessor);
+            GestorConexionApis objgestor = new GestorConexionApis();
             List<UsuarioModel> listausuario = await objgestor.ListarUsuarios();
 
             if (!string.IsNullOrEmpty(UsuarioBuscar))
@@ -53,7 +48,7 @@ namespace ProyectoRutasBusesFE.Controllers
         [HttpGet]
         public async Task<IActionResult> AbrirEdicionUsuario(int usuarioID)
         {
-            GestorConexionApis objgestor = new GestorConexionApis(_httpContextAccessor);
+            GestorConexionApis objgestor = new GestorConexionApis();
             List<UsuarioModel> lstresultado = await objgestor.ListarUsuarios();
             UsuarioModel encontrado = lstresultado.FirstOrDefault(u => u.usuarioID == usuarioID);
 
@@ -61,7 +56,24 @@ namespace ProyectoRutasBusesFE.Controllers
             {
                 new SelectListItem { Value = "1", Text = "SuperAdmin" },
                 new SelectListItem { Value = "2", Text = "Supervisor" },
-                new SelectListItem { Value = "3", Text = "Mecanico" },
+                new SelectListItem { Value = "3", Text = "Mecánico" },
+                new SelectListItem { Value = "4", Text = "Chofer" }
+            };
+            return View(encontrado);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AbrirEdicionUsuario2(int usuarioID)
+        {
+            GestorConexionApis objgestor = new GestorConexionApis();
+            List<UsuarioModel> lstresultado = await objgestor.ListarUsuarios();
+            UsuarioModel encontrado = lstresultado.FirstOrDefault(u => u.usuarioID == usuarioID);
+
+            ViewBag.TipoUsuarios = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "SuperAdmin" },
+                new SelectListItem { Value = "2", Text = "Supervisor" },
+                new SelectListItem { Value = "3", Text = "Mecánico" },
                 new SelectListItem { Value = "4", Text = "Chofer" }
             };
             return View(encontrado);
@@ -74,7 +86,7 @@ namespace ProyectoRutasBusesFE.Controllers
         [HttpPost]
         public async Task<IActionResult> GuardarUsuario(UsuarioModel usuario)
         {
-            GestorConexionApis objgestor = new GestorConexionApis(_httpContextAccessor);
+            GestorConexionApis objgestor = new GestorConexionApis();
             var resultado = await objgestor.AgregarUsuario(usuario);
             if (resultado)
             {
@@ -90,7 +102,7 @@ namespace ProyectoRutasBusesFE.Controllers
         [HttpPost]
         public async Task<IActionResult> EditarUsuario(UsuarioModel usuario)
         {
-            GestorConexionApis objgestor = new GestorConexionApis(_httpContextAccessor);
+            GestorConexionApis objgestor = new GestorConexionApis();
             // Obtener el usuario existente
             List<UsuarioModel> lstresultado = await objgestor.ListarUsuarios();
             UsuarioModel usuarioExistente = lstresultado.FirstOrDefault(u => u.usuarioID == usuario.usuarioID);
@@ -116,7 +128,7 @@ namespace ProyectoRutasBusesFE.Controllers
         [HttpGet]
         public async Task<IActionResult> BorrarUsuario(int usuarioID)
         {
-            GestorConexionApis objgestor = new GestorConexionApis(_httpContextAccessor);
+            GestorConexionApis objgestor = new GestorConexionApis();
             var resultado = await objgestor.EliminarUsuario(usuarioID);
             if (resultado)
             {

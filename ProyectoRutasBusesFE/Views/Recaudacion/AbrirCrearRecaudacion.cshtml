@@ -1,0 +1,85 @@
+﻿@model ProyectoRutasBusesFE.Models.RecaudacionModel
+@{ Layout = null; }
+
+<script>
+    var preciosRutas = @Html.Raw(Json.Serialize(ViewBag.PreciosRutas));
+</script>
+
+<div class="modal-header">
+    <h4 class="modal-title" style="flex: 1; text-align: left;">Generar Recaudación</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<form asp-action="GuardarRecaudacion" asp-controller="Recaudacion" method="post">
+    <div class="box-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="recaudacionID" />
+        <div class="form-group">
+            <label asp-for="rutaID" class="control-label">Ruta</label>
+            <select asp-for="rutaID" class="form-control" asp-items="ViewBag.Rutas"></select>
+            <span asp-validation-for="rutaID" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="unidadID" class="control-label">Unidad</label>
+            <select asp-for="unidadID" class="form-control" asp-items="ViewBag.Unidades"></select>
+            <span asp-validation-for="unidadID" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Cantidad de Pasajeros</label>
+            <input id="cantidadPasajeros" name="cantidadPasajeros" class="form-control" readonly />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Monto Recaudado</label>
+            <input id="montoRecaudado" name="montoRecaudado" class="form-control" readonly />
+        </div>
+
+        <input type="hidden" id="fecha" name="fecha" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" />
+    </div>
+
+    <div class="box-footer">
+        <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Generar</button>
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+    </div>
+</form>
+<script src="~/js/recaudacionScript.js"></script>
+<script>
+    $(document).ready(function () {
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        mostrarMensajeRecaudacion(successMessage, errorMessage);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Función para calcular y generar los valores de pasajeros y monto
+        function generarValoresRecaudacion() {
+            // Cantidad de pasajeros aproximada, entre 1000 y 14000
+            var cantidadPasajeros = Math.floor(Math.random() * 14000) + 1000;
+
+            // Obtener la tarifa del pasaje seleccionando la Ruta
+            var rutaID = $('#rutaID').val();
+            var precioPasaje = preciosRutas[rutaID] || 0;
+
+            // Calcular monto recaudado
+            var montoRecaudado = cantidadPasajeros * precioPasaje;
+
+            // Asignar los valores a los campos correspondientes
+            $('#cantidadPasajeros').val(cantidadPasajeros);
+            $('#montoRecaudado').val(montoRecaudado.toFixed(2));
+        }
+
+        // Al seleccionar la Ruta o la Unidad
+        $('#rutaID, #unidadID').change(function () {
+            generarValoresRecaudacion();
+        });
+
+        // Inicializar valores al cargar
+        generarValoresRecaudacion();
+    });
+</script>

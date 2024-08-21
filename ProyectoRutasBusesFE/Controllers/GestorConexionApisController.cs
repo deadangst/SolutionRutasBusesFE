@@ -11,7 +11,6 @@ namespace ProyectoRutasBusesFE.Controllers
 {
     public class GestorConexionApis
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         #region Propiedades
 
@@ -21,9 +20,8 @@ namespace ProyectoRutasBusesFE.Controllers
 
         #region Constructor
 
-        public GestorConexionApis(IHttpContextAccessor httpContextAccessor)
+        public GestorConexionApis()
         {
-            _httpContextAccessor = httpContextAccessor;
             ConexionApis = new HttpClient();
             EstablecerDatosBaseConexion();
         }
@@ -36,20 +34,38 @@ namespace ProyectoRutasBusesFE.Controllers
 
         private void EstablecerDatosBaseConexion()
         {
-            ConexionApis.BaseAddress = new Uri("http://localhost:22482/");
+        
+            ConexionApis.BaseAddress = new Uri("http://localhost:85/");
+            //ConexionApis.BaseAddress = new Uri("http://localhost:22482/");
             ConexionApis.DefaultRequestHeaders.Accept.Clear();
-            ConexionApis.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            var token = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
-            if (!string.IsNullOrEmpty(token))
-            {
-                ConexionApis.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+            ConexionApis.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         #endregion
 
         #region Publico
+
+        #region Autorizaciones
+
+        public async Task<List<PerfilModel>> AutorizacionesPorUsuarios(UsuarioModel P_Entidad)
+        {
+            List<PerfilModel> listaresultado = new List<PerfilModel>();
+            string rutaAPI = @"api/RutaBuses/AutorizacionesPorUsuarios";
+
+            ConexionApis.DefaultRequestHeaders.Add("pEmail", P_Entidad.email);
+
+            HttpResponseMessage resultadoconsumo = await ConexionApis.GetAsync(rutaAPI);
+            if (resultadoconsumo.IsSuccessStatusCode)
+            {
+                string jsonstring = await resultadoconsumo.Content.ReadAsStringAsync();
+                listaresultado = JsonSerializer.Deserialize<List<PerfilModel>>(jsonstring);
+            }
+
+            return listaresultado;
+        }
+
+        #endregion
 
         #region Usuarios
 
@@ -111,26 +127,6 @@ namespace ProyectoRutasBusesFE.Controllers
 
         #endregion
 
-        #region Autorizaciones
-
-        public async Task<List<PerfilModel>> AutorizacionesPorUsuarios(UsuarioModel P_Entidad)
-        {
-            List<PerfilModel> listaresultado = new List<PerfilModel>();
-            string rutaAPI = @"api/RutaBuses/AutorizacionesPorUsuarios";
-
-            ConexionApis.DefaultRequestHeaders.Add("pEmail", P_Entidad.email);
-
-            HttpResponseMessage resultadoconsumo = await ConexionApis.GetAsync(rutaAPI);
-            if (resultadoconsumo.IsSuccessStatusCode)
-            {
-                string jsonstring = await resultadoconsumo.Content.ReadAsStringAsync();
-                listaresultado = JsonSerializer.Deserialize<List<PerfilModel>>(jsonstring);
-            }
-
-            return listaresultado;
-        }
-
-        #endregion
         #region Choferes
 
         public async Task<List<ChoferModel>> ListarChoferes()
@@ -306,7 +302,24 @@ namespace ProyectoRutasBusesFE.Controllers
             return listaresultado;
         }
 
+        // Nuevo método para validar si una recaudación ya existe
+        public async Task<bool> ValidarRecaudacionExistente(int rutaID, int unidadID, DateTime fecha)
+        {
+            string rutaAPI = $"api/RutaBuses/ValidarRecaudacionExistente?rutaID={rutaID}&unidadID={unidadID}&fecha={fecha.ToString("yyyy-MM-dd")}";
+
+            HttpResponseMessage resultadoconsumo = await ConexionApis.GetAsync(rutaAPI);
+            if (resultadoconsumo.IsSuccessStatusCode)
+            {
+                string jsonstring = await resultadoconsumo.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<bool>(jsonstring);
+            }
+
+            return false;
+        }
+
         #endregion
+
+
         #region Bitacora
 
         public async Task<List<BitacoraModel>> ListarBitacora()

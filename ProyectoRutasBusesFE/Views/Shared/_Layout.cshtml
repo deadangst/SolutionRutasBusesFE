@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProyectoRutasBusesFE</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/adminlte/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="~/adminlte/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="~/css/custom.css" /> <!-- Incluye el archivo CSS personalizado -->
+    <link rel="stylesheet" href="~/css/site.css" /> <!-- Incluye el archivo CSS personalizado -->
     <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.21/datatables.min.css" />
     <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
     <link rel="stylesheet" href="~/lib/sweetalert/sweetalert.css" />
@@ -49,7 +52,7 @@
             }
 
                 .sidebar a:hover {
-                    background-color: #495057;
+                    background-color: #bf7a0d;
                     color: #ffffff;
                 }
 
@@ -65,7 +68,7 @@
             }
 
         .navbar-top {
-            background-color: #0056b3;
+            background-color: #f39c12;
             color: white;
             position: fixed;
             top: 0;
@@ -78,13 +81,13 @@
             }
 
                 .navbar-top .nav-link:hover {
-                    color: #cfd8dc;
+                    color: #404041;
                 }
 
         .toggle-btn {
             font-size: 20px;
             cursor: pointer;
-            background-color: #0056b3;
+            background-color: #404041;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -92,43 +95,15 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-top">
-        <button class="toggle-btn" onclick="toggleSidebar()">&#9776;</button>
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">ProyectoRutasBusesFE</a>
-        <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="~/images/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" width="30"> @User.Identity.Name
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="@Url.Action("UserProfile", "Config")">Perfil</a>
-                        <a class="dropdown-item" href="@Url.Action("CerrarSesion", "Autenticacion")">Cerrar sesión</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <div class="sidebar" id="sidebar">
-        <h2>Navegación Principal</h2>
-        <a asp-area="" asp-controller="Usuario" asp-action="Index"><i class="fa fa-users"></i> Gestión de Usuarios</a>
-        <a asp-area="" asp-controller="Chofer" asp-action="Index"><i class="fa fa-id-badge"></i> Gestión de Choferes</a>
-        <a asp-area="" asp-controller="Unidad" asp-action="Index"><i class="fa fa-bus"></i> Gestión de Unidades</a>
-        <a asp-area="" asp-controller="Ruta" asp-action="Index"><i class="fa fa-road"></i> Gestión de Rutas</a>
-        <a asp-area="" asp-controller="Recaudacion" asp-action="Index"><i class="fa fa-money"></i> Gestión de Recaudaciones</a>
-        <a asp-area="" asp-controller="Bitacora" asp-action="Index"><i class="fa fa-book"></i> Ver Bitácora</a>
-    </div>
+    @Html.Partial("_Navbar")
+    @Html.Partial("_Sidebar")
     <div class="main-content" id="main-content">
         <main role="main" class="pb-3">
             @RenderBody()
             @RenderSection("MainContent", required: false)
         </main>
     </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - ProyectoRutasBusesFE - <a asp-area="" asp-controller="Home" asp-action="About">Sobre el Proyecto</a>
-        </div>
-    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/dt/dt-1.10.21/datatables.min.js"></script>
@@ -136,7 +111,7 @@
     <script src="~/lib/sweetalert/sweetalert.min.js"></script>
     <script src="~/lib/marioizquierdo-jquery.serializeJSON/jquery.serializejson.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/scripts.js" asp-append-version="true"></script>
+    <script src="~/js/borradoScripts.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
     <script type="text/javascript">
         function toggleSidebar() {

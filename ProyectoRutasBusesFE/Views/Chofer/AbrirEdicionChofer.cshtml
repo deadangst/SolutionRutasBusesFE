@@ -1,0 +1,81 @@
+﻿@model ProyectoRutasBusesFE.Models.ChoferModel
+
+@{
+    ViewData["Title"] = "Abrir Edición Chofer";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+    <link rel="stylesheet" href="~/css/agregar_editar.css" />
+    <title>Modificación de Chofer</title>
+    <script src="~/js/editarStyle.js"></script> <!-- Incluye el script para aplicar estilo -->
+</head>
+<body>
+    <div class="maintenance-ticket">
+        <h1>Modificar Chofer</h1>
+        <form asp-action="EditarChofer" asp-controller="Chofer" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group has-feedback">
+                        <label class="control-label">ID Chofer:</label>
+                        <input type="text" asp-for="choferID" readonly="readonly" class="form-control" />
+                        <span asp-validation-for="choferID" class="text-danger"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label asp-for="usuarioID" class="control-label">Usuario</label>
+                        <select asp-for="usuarioID" class="form-control" asp-items="ViewBag.Usuarios"></select>
+                        <span asp-validation-for="usuarioID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group has-feedback">
+                        <label asp-for="numeroEmpleado" class="control-label"></label>
+                        <input asp-for="numeroEmpleado" class="form-control" placeholder="Número de Empleado" />
+                        <span asp-validation-for="numeroEmpleado" class="text-danger"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label asp-for="rutaID" class="control-label">Ruta</label>
+                        <select asp-for="rutaID" class="form-control" asp-items="ViewBag.Rutas"></select>
+                        <span asp-validation-for="rutaID" class="text-danger"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label asp-for="unidadID" class="control-label">Unidad</label>
+                        <select asp-for="unidadID" class="form-control" asp-items="ViewBag.Unidades"></select>
+                        <span asp-validation-for="unidadID" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+        <div class="text-center mt-3">
+            <a asp-action="Index" asp-controller="Chofer" class="text-center">Regresar a listado de choferes</a>
+        </div>
+    </div>
+    <!-- /.maintenance-ticket -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="~/js/agregarusuario.js"></script>
+    <script>
+        $(document).ready(function () {
+            aplicarEstiloMantenimiento(); // Aplica el estilo
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            mostrarMensajeUsuarioAgregado(successMessage, errorMessage);
+        });
+    </script>
+</body>
+</html>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

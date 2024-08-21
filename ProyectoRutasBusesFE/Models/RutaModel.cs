@@ -21,6 +21,10 @@ namespace ProyectoRutasBusesFE.Models
         [Display(Name = "Precio del Pasaje")]
         public decimal precioPasaje { get; set; }
 
+        [Required]
+        [Display(Name = "Cantidad de Paradas")]
+        public int cantidadParadas { get; set; } // Nueva propiedad
+
         #endregion
 
         #region Constructor 
@@ -31,6 +35,7 @@ namespace ProyectoRutasBusesFE.Models
             nombreRuta = string.Empty;
             supervisorID = 0;
             precioPasaje = 0.0m;
+            cantidadParadas = 0; // Inicializa la nueva propiedad
         }
 
         #endregion

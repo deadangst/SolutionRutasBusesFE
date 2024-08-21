@@ -20,15 +20,7 @@ namespace ProyectoRutasBusesFE.Controllers
         }
         [Authorize]
         public IActionResult Index()
-        {
-            // Obtener información del usuario autenticado
-            var userName = User.Identity.Name;
-            ViewBag.UserName = userName;
-
-            // Aquí deberías obtener las rutas (organizaciones) que el usuario tiene permiso para ver
-            // Por simplicidad, creamos una lista de ejemplo
-            var rutas = new List<string> { "Ruta 1", "Ruta 2", "Ruta 3" };
-            ViewBag.Rutas = rutas;
+        {           
 
             return View();
         }

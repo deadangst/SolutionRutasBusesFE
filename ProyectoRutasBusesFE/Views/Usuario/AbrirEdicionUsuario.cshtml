@@ -1,0 +1,96 @@
+﻿@model ProyectoRutasBusesFE.Models.UsuarioModel
+
+@{
+    ViewData["Title"] = "Abrir Edición Usuario";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+    <link rel="stylesheet" href="~/css/agregar_editar.css" />
+    <title>Modificación de Usuario</title>
+    <script src="~/js/editarStyle.js"></script> <!-- Incluye el script para aplicar estilo -->
+</head>
+<body>
+    <div class="maintenance-ticket">
+        <h1>Modificar Usuario</h1>
+        <form asp-action="EditarUsuario" asp-controller="Usuario" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group has-feedback">
+                        <label class="control-label">ID Usuario:</label>
+                        <input type="text" asp-for="usuarioID" readonly="readonly" class="form-control" />
+                        <span asp-validation-for="usuarioID" class="text-danger"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label asp-for="nombre" class="control-label"></label>
+                        <input asp-for="nombre" class="form-control" placeholder="Nombre" />
+                        <span asp-validation-for="nombre" class="text-danger"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label asp-for="apellido" class="control-label"></label>
+                        <input asp-for="apellido" class="form-control" placeholder="Apellido" />
+                        <span asp-validation-for="apellido" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group has-feedback">
+                        <label asp-for="email" class="control-label"></label>
+                        <input asp-for="email" class="form-control" placeholder="ejemplo@correo.com" />
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label asp-for="telefono" class="control-label"></label>
+                        <input asp-for="telefono" class="form-control" placeholder="Teléfono" />
+                        <span asp-validation-for="telefono" class="text-danger"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label asp-for="direccion" class="control-label"></label>
+                        <input asp-for="direccion" class="form-control" placeholder="Dirección" />
+                        <span asp-validation-for="direccion" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label asp-for="tipoUsuarioID" class="control-label"></label>
+                <select asp-for="tipoUsuarioID" class="form-control" asp-items="ViewBag.TipoUsuarios"></select>
+                <span asp-validation-for="tipoUsuarioID" class="text-danger"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label asp-for="passwordHash" class="control-label"></label>
+                <input asp-for="passwordHash" type="password" class="form-control" value="********" placeholder="Debe digitar una clave segura" />
+                <span asp-validation-for="passwordHash" class="text-danger"></span>
+            </div>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+        <div class="text-center mt-3">
+            <a asp-action="Index" asp-controller="Usuario" class="text-center">Regresar a listado de usuarios</a>
+        </div>
+    </div>
+    <!-- /.maintenance-ticket -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="~/js/agregarusuario.js"></script>
+    <script>
+        $(document).ready(function () {
+            aplicarEstiloMantenimiento(); // Aplica el estilo
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            mostrarMensajeUsuarioAgregado(successMessage, errorMessage);
+        });
+    </script>
+</body>
+</html>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

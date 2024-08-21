@@ -1,0 +1,48 @@
+﻿@model ProyectoRutasBusesFE.Models.UnidadModel
+@{ Layout = null; }
+
+<div class="modal-header">
+    <h4 class="modal-title" style="flex: 1; text-align: left;">Agregar Autobus</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+
+<form asp-action="GuardarUnidad" asp-controller="Unidad" method="post" onsubmit="return SubmitAddEdit(this)">
+    <div class="box-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="numeroPlaca" class="control-label">Número de Placa</label>
+            <input asp-for="numeroPlaca" class="form-control" />
+            <span asp-validation-for="numeroPlaca" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="tipoMotor" class="control-label">Tipo de Motor</label>
+            <select asp-for="tipoMotor" class="form-control" asp-items="ViewBag.TiposMotor"></select>
+            <span asp-validation-for="tipoMotor" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="capacidad" class="control-label">Capacidad</label>
+            <input asp-for="capacidad" class="form-control" />
+            <span asp-validation-for="capacidad" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="estadoUnidad" class="control-label">Estado de la Unidad</label>
+            <select asp-for="estadoUnidad" class="form-control" asp-items="ViewBag.EstadosUnidad"></select>
+            <span asp-validation-for="estadoUnidad" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="rutaID" class="control-label">Ruta Asignada</label>
+            <select asp-for="rutaID" class="form-control" asp-items="ViewBag.Rutas"></select>
+            <span asp-validation-for="rutaID" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="box-footer">
+        <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Guardar</button>
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+    </div>
+</form>
+
+<script>Ladda.bind('.btn', { timeout: 1000 });</script>

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ProyectoRutasBusesFE.Models.RutaModel>
+
+@{
+    ViewData["Title"] = "Rutas";
+    var rutas = Model.ToList();
+    var hayRutasAsignadas = rutas.Any();
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                @if (hayRutasAsignadas)
+                {
+                    foreach (var item in rutas)
+                    {
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="small-box bg-green">
+                                <div class="inner">
+                                    <h3>@item.nombreRuta</h3>
+                                    <p style="font-size: smaller;">
+                                        <strong>Pasaje: </strong>@item.precioPasaje.ToString("C", new System.Globalization.CultureInfo("es-CR"))
+                                    </p>
+                                    <p style="font-size: 1.1em; font-weight: bold;">
+                                        <strong>Supervisor: </strong>@ViewBag.Supervisores[item.supervisorID]
+                                    </p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-road"></i>
+                                </div>
+                                <a href="@Url.Action("Detalles", "Unidad", new { id = item.rutaID })" class="small-box-footer">
+                                    Autobuses <i class="fa fa-bus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="small-box bg-purple">
+                            <div class="inner">
+                                <h3>Sin rutas asignadas</h3>
+                            </div>
+                            <div class="inner">
+                                <h4>Contacte a su Supervisor</h4>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
